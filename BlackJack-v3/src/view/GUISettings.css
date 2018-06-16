@@ -1,0 +1,43 @@
+.root {
+     -fx-background-image: url("../../imgs/cardsTable.jpg");
+}
+
+.label {
+    -fx-font-size: 24px;
+    -fx-font-family: "Arial Black";
+    -fx-text-fill: white;
+    -fx-effect: innershadow( three-pass-box , rgba(0,0,0,0.7) , 4, 0.1 , 0 , 2 );
+    -fx-font-smoothing-type: lcd;
+}
+
+.button {
+	-fx-font-size: 16px;
+    -fx-text-fill: white;
+    -fx-font-family: "Arial Black";
+    -fx-font-weight: bold;
+    -fx-background-color: linear-gradient( #808080, black );
+    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );
+}
+
+.button:hover {
+    -fx-background-color: linear-gradient( black, #808080 );
+}
+
+.slider .axis {
+    -fx-tick-label-font-size: 20px;
+    -fx-tick-label-font-weight: bold;
+    -fx-tick-label-fill: white;
+}
+
+.radio-button {
+	-fx-font-size: 12px;
+    -fx-font-family: "Arial Black";
+    -fx-text-fill: white;
+}
+
+#Pane {
+	-fx-border-color: white;
+    -fx-border-insets: 5;
+    -fx-border-width: 3;
+    -fx-border-style: solid;
+}

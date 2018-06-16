@@ -1,0 +1,9 @@
+1462221909035	Rename method 'updateP1Value'
+1462229027681	Rename type 'Total'
+1462229213797	Rename field 'dealer'
+1462229222452	Rename field 'dTotal'
+1462229235018	Rename field 'p1Total'
+1462229244112	Rename field 'p2Total'
+1462231612201	Rename method 'dealerWinChips'
+1462238061267	Infer generic type arguments
+1462323244083	Rename field 'stopped'

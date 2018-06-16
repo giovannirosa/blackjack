@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Move element &apos;menu.png&apos; to &apos;BlackJack/imgs&apos;&#x0D;&#x0A;- Original project: &apos;Test&apos;&#x0D;&#x0A;- Destination element: &apos;BlackJack/imgs&apos;&#x0D;&#x0A;- Original element: &apos;menu.png&apos;&#x0D;&#x0A;- Update references to refactored element" description="Move file" destination="=BlackJack/imgs" element1="imgs/menu.png" files="1" flags="589830" folders="0" id="org.eclipse.jdt.ui.move" policy="org.eclipse.jdt.ui.moveResources" qualified="false" references="true" stamp="1446730180286" units="0" version="1.0"/>
+</session>

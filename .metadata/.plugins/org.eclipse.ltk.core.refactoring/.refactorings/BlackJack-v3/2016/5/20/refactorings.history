@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename method &apos;controller.Blackjack.checkStop()&apos; to &apos;checkRoundEnd&apos;&#x0D;&#x0A;- Original project: &apos;BlackJack-v3&apos;&#x0D;&#x0A;- Original element: &apos;controller.Blackjack.checkStop()&apos;&#x0D;&#x0A;- Renamed element: &apos;controller.Blackjack.checkRoundEnd()&apos;&#x0D;&#x0A;- Update references to refactored element" delegate="false" deprecate="false" description="Rename method &apos;checkStop&apos;" flags="589826" id="org.eclipse.jdt.ui.rename.method" input="/src&lt;controller{Blackjack.java[Blackjack~checkStop" name="checkRoundEnd" references="true" stamp="1462835042957" version="1.0"/>
+</session>

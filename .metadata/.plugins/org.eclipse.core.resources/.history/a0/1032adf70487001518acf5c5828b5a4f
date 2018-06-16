@@ -1,0 +1,466 @@
+package view;
+
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
+import java.awt.Image;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
+import javax.imageio.ImageIO;
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.border.Border;
+
+import sun.audio.AudioPlayer;
+import sun.audio.AudioStream;
+import controller.Actions;
+import model.Deck;
+import model.Total;
+
+public class GUIMultiplayer {
+	
+	JFrame frame = new JFrame("Multiplayer Game");
+	JFrame decisionFrame = new JFrame("Decision");
+	JButton shuffleBut = new JButton("Shuffle");
+	JButton startBut = new JButton("Start Game");
+	JButton getBut = new JButton("Get Card");
+	JButton clearBut = new JButton("Start Again");
+	JButton stopBut = new JButton("Stop");
+	JButton continueBut = new JButton("Continue");
+	JLabel p1Label = new JLabel("PLAYER 1:");
+	JLabel p2Label = new JLabel("PLAYER 2:");
+	JLabel roundLabel = new JLabel("PLAYER 1 ROUND");
+	JLabel scoreLabel = new JLabel("10 POINTS TO WIN");
+	JLabel p1ScoreLabel = new JLabel("P1:");
+	JLabel p1ScoreValue = new JLabel("0");
+	JLabel p2ScoreLabel = new JLabel("P2:");
+	JLabel p2ScoreValue = new JLabel("0");
+	JLabel plusLabel = new JLabel("+");
+	JLabel equalLabel = new JLabel("=");
+	JLabel plusLabel2 = new JLabel("+");
+	JLabel equalLabel2 = new JLabel("=");
+	JLabel suitLabel = new JLabel();
+	JLabel amountLabel = new JLabel();
+	JLabel messageReady = new JLabel("The deck is ready and presents all cards from a normal deck.");
+	JLabel messageShuffle = new JLabel("Please click on button below to Shuffle the cards.");
+	JLabel messageStart = new JLabel("Great! You can Start the game now or Shuffle again if wanted.");
+	JLabel messageDec = new JLabel("Do you want to Continue or Stop?");
+	JLabel messageCard = new JLabel("You got: ");
+	JLabel newValue = new JLabel();
+	JLabel newSuit = new JLabel();
+	JLabel newValue2 = new JLabel();
+	JLabel newSuit2 = new JLabel();
+	JTextField newField = new JTextField(5);
+	JTextField plusField = new JTextField(5);
+	JTextField finalField = new JTextField(5);
+	JTextField newField2 = new JTextField(5);
+	JTextField plusField2 = new JTextField(5);
+	JTextField finalField2 = new JTextField(5);
+	Image heartImg = ImageIO.read(new File("imgs/Game-hearts.png"));
+	Image clubImg = ImageIO.read(new File("imgs/Game-clubs.png"));
+	Image diamondImg = ImageIO.read(new File("imgs/Game-diamond.png"));
+	Image spadesImg = ImageIO.read(new File("imgs/Game-spades.png"));
+	Deck deck = new Deck();
+	Total p1Total = new Total();
+	Total p2Total = new Total();
+	Actions act = new Actions();
+	boolean p1Playing = true;
+	boolean p1Stopped = false;
+	boolean p2Stopped = false;
+	boolean gameEnd = false;
+	boolean whosPlaying;
+	
+	public GUIMultiplayer() throws IOException {
+		
+		// FRAMES ************************************
+		frame.setLayout(new BorderLayout());
+		frame.setSize(800,400);
+		frame.setResizable(false);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setLocationRelativeTo(null);
+		
+		decisionFrame.setLayout(new BorderLayout());
+		decisionFrame.setSize(300,200);
+		decisionFrame.setResizable(false);
+		decisionFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		decisionFrame.setLocationRelativeTo(null);
+		// *******************************************
+		
+		// DECK **************************************
+		deck.setDeck(act.mountDeck());
+		// *******************************************
+		
+		// BUTTONS ***********************************
+		startBut.setEnabled(false);
+		// *******************************************
+		
+		// LABELS ************************************
+		messageStart.setVisible(false);
+		// *******************************************
+		
+		// SOUNDS ************************************
+		InputStream app = new FileInputStream("sounds/Applause.wav");
+		InputStream boo = new FileInputStream("sounds/Boo.wav");
+		AudioStream applauseStream = new AudioStream(app);
+		AudioStream booStream = new AudioStream(boo);
+		// *******************************************
+
+		// BORDER ************************************
+		Border borda = BorderFactory.createTitledBorder("GAME");
+		// *******************************************
+
+		// IMAGES ************************************
+		heartImg = heartImg.getScaledInstance(20, 20, Image.SCALE_SMOOTH);
+		spadesImg = spadesImg.getScaledInstance(20, 20, Image.SCALE_SMOOTH);
+		clubImg = clubImg.getScaledInstance(20, 20, Image.SCALE_SMOOTH);
+		diamondImg = diamondImg.getScaledInstance(20, 20, Image.SCALE_SMOOTH);
+		// *******************************************
+
+		// TEXT FIELDS *******************************
+		newField.setEditable(false);
+		newField.setHorizontalAlignment(JTextField.CENTER);
+		plusField.setEditable(false);
+		plusField.setHorizontalAlignment(JTextField.CENTER);
+		finalField.setEditable(false);
+		finalField.setHorizontalAlignment(JTextField.CENTER);
+		newField2.setEditable(false);
+		newField2.setHorizontalAlignment(JTextField.CENTER);
+		plusField2.setEditable(false);
+		plusField2.setHorizontalAlignment(JTextField.CENTER);
+		finalField2.setEditable(false);
+		finalField2.setHorizontalAlignment(JTextField.CENTER);
+		// *******************************************
+		
+		// PANELS ************************************
+		JPanel geralPanel = new JPanel();
+		geralPanel.setLayout(new BoxLayout (geralPanel, BoxLayout.Y_AXIS));
+		JPanel geralPanel2 = new JPanel();
+		geralPanel2.setLayout(new BoxLayout (geralPanel2, BoxLayout.PAGE_AXIS));
+		
+		JPanel buttonPanel = new JPanel (new FlowLayout (FlowLayout.CENTER));
+		JPanel buttonPanel2 = new JPanel (new FlowLayout (FlowLayout.CENTER));
+		
+		JPanel scorePanel = new JPanel();
+		scorePanel.setLayout(new BoxLayout (scorePanel, BoxLayout.Y_AXIS));
+		JPanel p1ScorePanel = new JPanel(new FlowLayout (FlowLayout.CENTER));
+		JPanel p2ScorePanel = new JPanel(new FlowLayout (FlowLayout.CENTER));
+		
+		JPanel cardLine = new JPanel (new FlowLayout (FlowLayout.CENTER));
+		JPanel decLine = new JPanel (new FlowLayout (FlowLayout.CENTER));
+		JPanel amtLine = new JPanel (new FlowLayout (FlowLayout.CENTER));
+		
+		JPanel line0 = new JPanel (new GridLayout (1, 1));
+		JPanel zeroLine = new JPanel (new FlowLayout (FlowLayout.CENTER));
+		
+		JPanel organize = new JPanel(new FlowLayout (FlowLayout.CENTER));
+		JPanel line1 = new JPanel (new GridLayout (1, 1));
+		JPanel firstLine = new JPanel (new FlowLayout (FlowLayout.CENTER));
+		
+		JPanel organize2 = new JPanel(new FlowLayout (FlowLayout.CENTER));
+		JPanel line2 = new JPanel (new GridLayout (1, 1));
+		JPanel secondLine = new JPanel (new FlowLayout (FlowLayout.CENTER));
+		// *******************************************
+		
+		// ORGANIZATION ******************************
+		buttonPanel.add(startBut);
+		buttonPanel.add(shuffleBut);
+		
+		buttonPanel2.add(continueBut);
+		buttonPanel2.add(stopBut);
+		
+		cardLine.add(messageCard);
+		decLine.add(messageDec);
+		amtLine.add(amountLabel);
+		
+		zeroLine.add(messageReady);
+		line0.add(zeroLine);
+		
+		firstLine.add(messageShuffle);
+		line1.add(firstLine);
+		
+		secondLine.add(messageStart);
+		line2.add(secondLine);
+		
+		geralPanel.add(new JPanel());
+		geralPanel.add(line0);
+		geralPanel.add(line1);
+		geralPanel.add(line2);
+		geralPanel.add(buttonPanel);
+		geralPanel.setBorder(borda);
+		
+		geralPanel2.add(cardLine);
+		geralPanel2.add(decLine);
+		geralPanel2.add(amtLine);
+		geralPanel2.add(buttonPanel2);
+		decisionFrame.add(geralPanel2);
+		
+		frame.add(geralPanel);
+		// *******************************************
+		
+		// LISTENERS *********************************
+		getBut.addActionListener(e -> {
+			// play
+			int plus = 0;
+			int numberCards = deck.getCards();
+			int index = act.getRandom(numberCards);
+			String card = deck.getDeck().get(index);
+			deck.getDeck().remove(index);
+			deck.setCards(numberCards-1);
+			int value = act.getValue(card);
+			String suit = act.getSuit(card);
+			whosPlaying = (p1Playing && !p1Stopped) || p2Stopped; // true for P1 and false for P2
+			if (whosPlaying) {
+				switch (suit) {
+				case "S":
+					cardLine.add(new JLabel(new ImageIcon(spadesImg)));
+					newSuit.setIcon(new ImageIcon(spadesImg));
+					break;
+				case "H":
+					cardLine.add(new JLabel(new ImageIcon(heartImg)));
+					newSuit.setIcon(new ImageIcon(heartImg));
+					break;
+				case "D":
+					cardLine.add(new JLabel(new ImageIcon(diamondImg)));
+					newSuit.setIcon(new ImageIcon(diamondImg));
+					break;
+				case "C":
+					cardLine.add(new JLabel(new ImageIcon(clubImg)));;
+					newSuit.setIcon(new ImageIcon(clubImg));
+					break;
+				default:
+					break;
+				}
+				cardLine.add(new JLabel(Integer.toString(value)));
+				newValue.setText(Integer.toString(value));
+				plusField.setText(Integer.toString(p1Total.getRound()));
+				plus = p1Total.getRound()+value;
+				finalField.setText(Integer.toString(plus));
+				p1Total.setRound(plus);
+				
+			} else {
+				switch (suit) {
+				case "S":
+					newSuit2.setIcon(new ImageIcon(spadesImg));
+					break;
+				case "H":
+					newSuit2.setIcon(new ImageIcon(heartImg));
+					break;
+				case "D":
+					newSuit2.setIcon(new ImageIcon(diamondImg));
+					break;
+				case "C":
+					newSuit2.setIcon(new ImageIcon(clubImg));
+					break;
+				default:
+					break;
+				}
+				newValue2.setText(Integer.toString(value));
+				plusField2.setText(Integer.toString(p2Total.getRound()));
+				plus = p2Total.getRound()+value;
+				finalField2.setText(Integer.toString(plus));
+				p2Total.setRound(plus);
+			}
+			
+			// check lost
+			if (plus > 21) {
+				AudioPlayer.player.start(booStream);
+				if (whosPlaying) {
+					JOptionPane.showMessageDialog(null, "PLAYER 1 GOT OVER 21!", "",JOptionPane.ERROR_MESSAGE);
+					roundLabel.setText("PLAYER 2 WIN!");
+					int score = p2Total.getScore()+1;
+					p2Total.setScore(score);
+					p2ScoreValue.setText(Integer.toString(score));
+				} else {
+					JOptionPane.showMessageDialog(null, "PLAYER 2 GOT OVER 21!", "",JOptionPane.ERROR_MESSAGE);
+					roundLabel.setText("PLAYER 1 WIN!");
+					int score = p1Total.getScore()+1;
+					p1Total.setScore(score);
+					p1ScoreValue.setText(Integer.toString(score));
+				}
+				try {
+					booStream.reset();
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
+				getBut.setEnabled(false);
+				stopBut.setEnabled(false);
+				gameEnd = true;
+			}
+			
+			if (!gameEnd) {
+				if (whosPlaying && p1Total.getRound() > p2Total.getRound() && p2Stopped) {
+					AudioPlayer.player.start(applauseStream);
+					JOptionPane.showMessageDialog(null, "PLAYER 1 WIN!", "",JOptionPane.INFORMATION_MESSAGE);
+					roundLabel.setText("PLAYER 1 WIN!");
+					int score = p1Total.getScore()+1;
+					p1Total.setScore(score);
+					p1ScoreValue.setText(Integer.toString(score));
+					getBut.setEnabled(false);
+					stopBut.setEnabled(false);
+					gameEnd = true;
+				} else if (!whosPlaying && p1Total.getRound() < p2Total.getRound() && p1Stopped) {
+					AudioPlayer.player.start(applauseStream);
+					JOptionPane.showMessageDialog(null, "PLAYER 2 WIN!", "",JOptionPane.INFORMATION_MESSAGE);
+					roundLabel.setText("PLAYER 2 WIN!");
+					int score = p2Total.getScore()+1;
+					p2Total.setScore(score);
+					p2ScoreValue.setText(Integer.toString(score));
+					getBut.setEnabled(false);
+					stopBut.setEnabled(false);
+					gameEnd = true;
+				} else {
+					if (whosPlaying && p2Stopped) {
+						stopBut.setEnabled(false);
+					} else if (!whosPlaying && p1Stopped) {
+						stopBut.setEnabled(false);
+					}
+					amountLabel.setText("Your amount is "+plus+"!");
+					decisionFrame.setVisible(true);
+				}
+				// Shuffle again after every play
+				act.shuffleDeck(deck.getDeck());
+			}
+		});
+		
+		shuffleBut.addActionListener(e -> {
+			act.shuffleDeck(deck.getDeck());
+			for (String tmp:deck.getDeck()) {
+				System.out.println(tmp);
+			}
+			startBut.setEnabled(true);
+			messageStart.setVisible(true);
+		});
+		
+		startBut.addActionListener(e -> {
+			geralPanel.removeAll();
+			geralPanel.setLayout(null);
+			zeroLine.removeAll();
+			firstLine.removeAll();
+			organize.removeAll();
+			buttonPanel.removeAll();
+			line1.removeAll();
+			secondLine.removeAll();
+			organize2.removeAll();
+			line2.removeAll();
+			
+			buttonPanel.add(getBut);
+			buttonPanel.add(clearBut);
+			
+			scorePanel.add(scoreLabel);
+			p1ScorePanel.add(p1ScoreLabel);
+			p1ScorePanel.add(p1ScoreValue);
+			p2ScorePanel.add(p2ScoreLabel);
+			p2ScorePanel.add(p2ScoreValue);
+			scorePanel.add(new JPanel());
+			scorePanel.add(p1ScorePanel);
+			scorePanel.add(p2ScorePanel);
+			scorePanel.setBorder(BorderFactory.createTitledBorder("SCOREBOARD"));
+			
+			zeroLine.add(roundLabel);
+			
+			organize.add(p1Label);
+			organize.add(newSuit);
+			organize.add(newValue);
+			organize.add(plusLabel);
+			organize.add(plusField);
+			organize.add(equalLabel);
+			organize.add(finalField);
+			line1.add(organize);
+			
+			organize2.add(p2Label);
+			organize2.add(newSuit2);
+			organize2.add(newValue2);
+			organize2.add(plusLabel2);
+			organize2.add(plusField2);
+			organize2.add(equalLabel2);
+			organize2.add(finalField2);
+			line2.add(organize2);
+			
+			geralPanel.add(scorePanel);
+			scorePanel.setBounds(15, 80, 200, 200);
+			geralPanel.add(zeroLine);
+			zeroLine.setBounds(320, 70, 150, 50);
+			geralPanel.add(new JPanel());
+			geralPanel.add(line1);
+			geralPanel.add(line2);
+			geralPanel.add(buttonPanel);
+			geralPanel.revalidate();
+			geralPanel.repaint();
+		});
+		
+		clearBut.addActionListener(e -> {
+			resetAll();
+		});
+		
+		stopBut.addActionListener(e -> {
+			if (!p1Playing) {
+				p2Stopped = true;
+				JOptionPane.showMessageDialog(null,"Player 2 stopped!","",JOptionPane.INFORMATION_MESSAGE);
+			} else {
+				p1Stopped = true;
+				JOptionPane.showMessageDialog(null,"Player 1 stopped!","",JOptionPane.INFORMATION_MESSAGE);
+			}
+			p1Playing = !p1Playing;
+			decisionFrame.dispose();
+		});
+		
+		continueBut.addActionListener(e -> {
+			
+			whosPlaying = (p1Playing && !p1Stopped) || p2Stopped;
+			if (whosPlaying) {
+				roundLabel.setText("PLAYER 2 ROUND");
+			} else {
+				roundLabel.setText("PLAYER 1 ROUND");
+			}
+			
+			p1Playing = !p1Playing;
+			decisionFrame.dispose();
+		});
+		
+		// *******************************************
+		
+	}
+	
+	private void resetAll() {
+		newSuit.setIcon(null);
+		newValue.setText("");
+		plusField.setText("");
+		finalField.setText("");
+		newSuit2.setIcon(null);
+		newValue2.setText("");
+		plusField2.setText("");
+		finalField2.setText("");
+		p1Total.setRound(0);
+		p2Total.setRound(0);
+		deck.setDeck(act.mountDeck());
+		deck.setCards(51);
+		act.shuffleDeck(deck.getDeck());
+		getBut.setEnabled(true);
+		stopBut.setEnabled(true);
+		roundLabel.setText("PLAYER 1 ROUND");
+		p1Playing = true;
+		p1Stopped = false;
+		p2Stopped = false;
+		gameEnd = false;
+	}
+
+	public JFrame getFrame() {
+		return frame;
+	}
+
+	public void setFrame(JFrame frame) {
+		this.frame = frame;
+	}
+	
+	
+}

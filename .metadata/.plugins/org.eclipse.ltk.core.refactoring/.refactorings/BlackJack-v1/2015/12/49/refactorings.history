@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename method &apos;controller.Game.playAgPlayer()&apos; to &apos;play&apos;&#x0D;&#x0A;- Original project: &apos;BlackJack&apos;&#x0D;&#x0A;- Original element: &apos;controller.Game.playAgPlayer()&apos;&#x0D;&#x0A;- Renamed element: &apos;controller.Game.play()&apos;&#x0D;&#x0A;- Update references to refactored element" delegate="false" deprecate="false" description="Rename method &apos;playAgPlayer&apos;" flags="589826" id="org.eclipse.jdt.ui.rename.method" input="/src&lt;controller{Game.java[Game~playAgPlayer" name="play" references="true" stamp="1449145702207" version="1.0"/>
+</session>

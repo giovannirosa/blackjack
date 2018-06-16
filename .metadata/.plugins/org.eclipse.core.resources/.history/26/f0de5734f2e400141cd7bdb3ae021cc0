@@ -1,0 +1,310 @@
+package sita.view;
+
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
+import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.imageio.ImageIO;
+import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.PlainDocument;
+
+import sita.MessagesManager;
+import sita.db.DBCarrier;
+import sita.model.Carrier;
+import sita.model.Fare;
+
+public class GUICarrier {
+
+	DBCarrier dbc = new DBCarrier();
+	JFrame frame = new JFrame();
+	JFrame frame2 = new JFrame();
+	JFrame frame3 = new JFrame();
+	JLabel guiLbl = new JLabel("Carrier Code:");
+	JLabel guiLbl2 = new JLabel("Carrier Name:");
+	JTextField txtF = new JTextField();
+	JTextField txtF2 = new JTextField();
+	JButton newBut = new JButton("New");
+	JButton delBut = new JButton("Delete");
+	JButton okayBut = new JButton("Ok");
+	JButton simBut = new JButton("Sim");
+	JButton naoBut = new JButton("Não");
+	JComboBox<String> cmbBox = new JComboBox<String>();
+	DefaultTableModel model;
+	JTable table;
+	Carrier carrier = new Carrier();
+	Fare theFare = new Fare();
+	int rowSelected;
+	String codeSelected;
+	
+	public GUICarrier() throws IOException, SQLException {
+	
+		// FRAMES **************************************************
+		frame.setLayout (new BorderLayout ());
+		frame.setSize(425,200);
+		frame.setTitle("Carrier Table");
+		frame.setResizable(false);
+		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		frame.setLocationRelativeTo(null);
+		//~~~~~~~~~~
+		frame2.setLayout (new BorderLayout ());
+		frame2.setSize(425,150);
+		frame2.setTitle("New Carrier");
+		frame2.setResizable(false);
+		frame2.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		frame2.setLocationRelativeTo(null);
+		//~~~~~~~~~~
+		frame3.setLayout (new BorderLayout ());
+		frame3.setSize(220,70);
+		frame3.setTitle("Delete Carrier");
+		frame3.setResizable(false);
+		frame3.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame3.setLocationRelativeTo(null);
+		// ************************************************************
+	
+		// TXTFIELDS RESTRICTIONS ************************************
+		txtF.setPreferredSize(new Dimension(50,20));
+		txtF.setDocument(new JTextFieldLimit(3));
+		txtF2.setPreferredSize(new Dimension(200,20));
+		// **********************************************************
+	
+		// PANELS *****************************************************
+		JPanel organize = new JPanel(new FlowLayout (FlowLayout.LEFT));
+		JPanel organize2 = new JPanel(new FlowLayout (FlowLayout.LEFT));
+		JPanel northPanel = new JPanel (new GridLayout (1, 1));
+		JPanel welcomePanel = new JPanel (new FlowLayout (FlowLayout.LEFT));
+		JPanel secondLine = new JPanel (new FlowLayout (FlowLayout.LEFT));
+		JPanel middlePanel = new JPanel (new GridLayout (1, 1));
+		JPanel radioPanel = new JPanel (new FlowLayout (FlowLayout.CENTER));
+		JPanel radioPanel2 = new JPanel (new FlowLayout (FlowLayout.CENTER));
+		JPanel radioPanel3 = new JPanel (new FlowLayout (FlowLayout.CENTER));
+		JPanel geralPanel = new JPanel(); // for frame1
+		geralPanel.setLayout(new BoxLayout (geralPanel, BoxLayout.PAGE_AXIS));
+		JPanel geralPanel2 = new JPanel(); // for frame2
+		geralPanel2.setLayout(new BoxLayout (geralPanel2, BoxLayout.PAGE_AXIS));
+		JPanel geralPanel3 = new JPanel(); // for frame3
+		geralPanel3.setLayout(new BorderLayout());
+		// ************************************************************
+		
+		// IMAGES *********************************************************
+		BufferedImage myPicture = ImageIO.read(new File("src/Cute-Ball-Go-icon.png"));
+		myPicture.getScaledInstance(10, 10, Image.SCALE_DEFAULT);
+		JLabel picLabel = new JLabel(new ImageIcon(myPicture));
+		JLabel picLabel2 = new JLabel(new ImageIcon(myPicture));
+		// ******************************************************************
+		
+		// TABLE *********************************************************
+		model = new DefaultTableModel();
+		model.addColumn("Code");
+		model.addColumn("Name");
+		table = new JTable(model);
+		
+		List<Carrier> listaCarrier = new ArrayList<Carrier>();
+		listaCarrier = dbc.listAllCarriers();
+		for(Carrier c:listaCarrier) {
+				
+			model.addRow(new Object[]{c.getCode(), c.getName()});
+		}
+		// ************************************************************
+		
+		// SCROLL **************************************************
+		JScrollPane scrollPane = new JScrollPane(table);
+		table.setFillsViewportHeight(true);
+		// **********************************************************
+		
+		// PANELS ORGANIZATION ***********************************************
+		welcomePanel.add(picLabel);
+		welcomePanel.add(guiLbl);
+		
+		secondLine.add(picLabel2);
+		secondLine.add(guiLbl2);
+			
+		organize.add(txtF);
+		organize2.add(txtF2);
+			
+		northPanel.add(welcomePanel);
+		northPanel.add(organize);
+		middlePanel.add(secondLine);
+		middlePanel.add(organize2);
+			
+		radioPanel.add(newBut);
+		radioPanel.add(delBut);
+			
+		radioPanel2.add(okayBut);
+		
+		radioPanel3.add(simBut);
+		radioPanel3.add(naoBut);
+			
+		geralPanel.add(scrollPane);
+		geralPanel.add(radioPanel);
+			
+		geralPanel2.add(northPanel);
+		geralPanel2.add(middlePanel);
+		geralPanel2.add(radioPanel2);
+		
+		geralPanel3.add(radioPanel3, BorderLayout.PAGE_END);
+		
+		frame.add(geralPanel);
+		frame2.add(geralPanel2);
+		frame3.add(geralPanel3);
+		// *********************************************************************
+		
+		// BUTTONS LISTENERS ***************************************************
+		newBut.addActionListener( new ActionListener() {
+			
+			public void actionPerformed(ActionEvent e) {
+				frame2.setVisible(true);
+			}
+		});
+		
+		delBut.addActionListener( new ActionListener() {
+
+			public void actionPerformed(ActionEvent e) {
+				rowSelected = table.getSelectedRow();
+				codeSelected = model.getValueAt(rowSelected, 0).toString();
+				boolean rowValid;
+				if (rowSelected >= 0)
+					rowValid = false;
+				else
+					rowValid = true;
+				if (rowValid) {
+					MessagesManager.displayErrorMessage("Selecione o Carrier a ser excluído!");
+				}else{
+					frame3.setVisible(true);
+				}
+				
+			}
+			
+		});
+		
+		okayBut.addActionListener( new ActionListener () {
+			
+			public void actionPerformed(ActionEvent e) {
+				
+				String code = getTxtF();
+				String name = getTxtF2();
+				boolean alphanum = code.matches("^[a-zA-Z0-9]*$");
+				boolean somecode = code.matches("");
+				boolean somename = name.matches("");
+				if (alphanum == false)
+					MessagesManager.displayErrorMessage("Error: Please enter letters and numbers only!");
+				else if (somecode == true)
+					MessagesManager.displayErrorMessage("Error: Please enter the code!");
+				else if (somename == true)
+					MessagesManager.displayErrorMessage("Error: Please enter the name!");
+				else {
+					carrier.setCode(code);
+					carrier.setName(name);
+					theFare.setCode(code);
+					try {
+						if ( dbc.insertCarrier(carrier) ) {
+							model.addRow(new Object[]{code, name});
+							cmbBox = GUIMenu.getCmbBox4();
+							cmbBox.addItem(c.getCode());
+							MessagesManager.displaySuccessMessage("Carrier inserida com sucesso!");
+						} else {
+							MessagesManager.displayErrorMessage("Carrier não pode ser inserida!");
+						}
+							
+					} catch (SQLException exp) {
+						MessagesManager.displayErrorMessage("Ocorreu um erro ao inserir a Carrier: "
+																			+ exp.getMessage() );
+					}
+					frame2.dispose();
+				}
+			}
+		});
+		
+		simBut.addActionListener( new ActionListener () {
+			
+			public void actionPerformed(ActionEvent e) {
+				try{
+					if( dbc.deleteCarrier(codeSelected) ){
+						model.removeRow(rowSelected);
+						MessagesManager.displaySuccessMessage("Carrier excluída com sucesso!");
+						frame3.dispose();
+					}else{
+						MessagesManager.displayErrorMessage("Carrier não pode ser excluída!");
+						frame3.dispose();
+					}
+						
+				}catch(Exception ex){
+					MessagesManager.displayErrorMessage("Ocorreu um erro ao excluir Carrier: "
+																	+ ex.getMessage() );
+					frame3.dispose();
+				}
+			}
+		});
+		
+		naoBut.addActionListener( new ActionListener () {
+			
+			public void actionPerformed(ActionEvent e) {
+				frame3.dispose();
+			}
+		});
+	}
+	// ***************************************************************************
+	
+	// GETS AND SETS ***************************************************************
+	public String getTxtF() {
+		return txtF.getText();
+	}
+	
+	public String getTxtF2() {
+		return txtF2.getText();
+	}
+	
+	public JFrame getFrame() {
+		return frame;
+	}
+	
+	public JFrame getFrame2() {
+		return frame2;
+	}
+	
+	public DefaultTableModel getModel() {
+		return model;
+	}
+	// ********************************************************************************
+	
+// limita o numero de caracteres que podem ser digitados
+@SuppressWarnings("serial")
+public class JTextFieldLimit extends PlainDocument {
+	private int limit;
+
+	JTextFieldLimit(int limit) {
+		super();
+		this.limit = limit;
+	}
+
+	public void insertString( int offset, String  str, AttributeSet attr ) 
+											throws BadLocationException {
+		 if (str == null) return;
+
+		 if ((getLength() + str.length()) <= limit) {
+			 super.insertString(offset, str, attr);
+		  }
+	}
+}
+}

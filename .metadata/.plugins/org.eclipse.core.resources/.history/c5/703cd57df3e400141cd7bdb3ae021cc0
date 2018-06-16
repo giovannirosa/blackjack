@@ -1,0 +1,382 @@
+package sita.view;
+
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.swing.*;
+import javax.swing.border.*;
+import javax.swing.table.DefaultTableModel;
+
+import sita.MessagesManager;
+import sita.db.DBCarrier;
+import sita.db.DBFare;
+import sita.db.DBRoute;
+import sita.db.DBRule;
+import sita.db.DBTariff;
+import sita.model.Carrier;
+import sita.model.Fare;
+import sita.model.Route;
+import sita.model.Rule;
+import sita.model.Tariff;
+
+
+public class GUIMenu {
+
+	JFrame frame = new JFrame();
+	JFrame frame2 = new JFrame();
+	JFrame frame3 = new JFrame();
+	JButton newBut = new JButton("New");
+	JButton delBut = new JButton("Delete");
+	JButton editBut = new JButton("Save");
+	JButton createBut = new JButton("Create");
+	JButton resetBut = new JButton("Reset");
+	JButton cancelBut = new JButton("Cancel");
+	JButton simBut = new JButton("Yes");
+	JButton naoBut = new JButton("No");
+	JButton editcBut = new JButton("Edit");
+	JButton closeBut = new JButton("Close")
+	JLabel label = new JLabel("FARES:");
+	JLabel label2 = new JLabel("Origin:");
+	JLabel label3 = new JLabel("Destiny:");
+	JLabel label4 = new JLabel("AddOn:");
+	JLabel label5 = new JLabel("RouteNo:");
+	JLabel label6 = new JLabel("RuleNo:");
+	JLabel label7 = new JLabel("TariffNo:");
+	JLabel label8 = new JLabel("Carrier Code:");
+	JTextField txtF = new JTextField();
+	JTextField txtF2 = new JTextField();
+	JTextField txtF3 = new JTextField();
+	JComboBox<Integer> cmbBox = new JComboBox<Integer>();
+	JComboBox<Integer> cmbBox2 = new JComboBox<Integer>();
+	JComboBox<Integer> cmbBox3 = new JComboBox<Integer>();
+	static JComboBox<String> cmbBox4 = new JComboBox<String>();
+	JTable table;
+	JTable table2;
+	Fare fare =  new Fare();
+	int rowSelected;
+	int idSelected;
+	DefaultTableModel model;
+	DBFare dbf = new DBFare();
+	DBCarrier dbc = new DBCarrier();
+	DBRoute dbrt = new DBRoute();
+	DBRule dbrl = new DBRule();
+	DBTariff dbt = new DBTariff();
+	
+	public GUIMenu() throws SQLException {
+		
+		// FRAME **************************************
+		frame.setLayout (new BorderLayout ());
+		frame.setSize(800,600);
+		frame.setTitle("Airfare SITA gSystem 0.1");
+		frame.setResizable(true);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setLocationRelativeTo(null);
+		// ~~~~~~~~~~~~~~
+		frame2.setLayout (new BorderLayout ());
+		frame2.setSize(400,600);
+		frame2.setTitle("New Fare");
+		frame2.setResizable(false);
+		frame2.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		frame2.setLocationRelativeTo(null);
+		// ~~~~~~~~~~~~~~
+		frame3.setLayout (new BorderLayout ());
+		frame3.setSize(220,70);
+		frame3.setTitle("Delete Fare?");
+		frame3.setResizable(false);
+		frame3.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		frame3.setLocationRelativeTo(null);
+		// *********************************************
+		
+		// BORDERS ************************************
+		Border borda = BorderFactory.createTitledBorder("FARES");
+		// ********************************************
+		
+		// PANELS **************************************
+		// 1 ~~~~~~~~
+		JPanel geralPanel = new JPanel();
+		geralPanel.setLayout(new BoxLayout (geralPanel, BoxLayout.PAGE_AXIS));
+		JPanel buttonPanel = new JPanel();
+		// 2 ~~~~~~~~
+		JPanel geralPanel2 = new JPanel();
+		geralPanel2.setLayout(new BoxLayout (geralPanel2, BoxLayout.PAGE_AXIS));
+		JPanel buttonPanel2 = new JPanel();
+		JPanel line1 = new JPanel();
+		JPanel line2 = new JPanel();
+		JPanel line3 = new JPanel();
+		JPanel line4 = new JPanel();
+		JPanel line5 = new JPanel();
+		JPanel line6 = new JPanel();
+		JPanel line7 = new JPanel();
+		// 3 ~~~~~~~~
+		JPanel geralPanel3 = new JPanel();
+		geralPanel3.setLayout(new BoxLayout (geralPanel3, BoxLayout.PAGE_AXIS));
+		JPanel buttonPanel3 = new JPanel();
+		// ********************************************
+		
+		// TABLE ******************************************************
+		model = new DefaultTableModel();
+		model.addColumn("idFare");
+		model.addColumn("Origin");
+		model.addColumn("Destiny");
+		model.addColumn("AddOn");
+		model.addColumn("RouteNo");
+		model.addColumn("RuleNo");
+		model.addColumn("TariffNo");
+		model.addColumn("Carrier Code");
+		table = new JTable(model);
+
+		List<Fare> listaFare = new ArrayList<Fare>();
+		listaFare = dbf.listAllFares();
+		for(Fare f:listaFare) {
+			model.addRow(new Object[]{f.getIdFare(),f.getOrigin(),f.getDestiny(),f.getAddon(),f.getRouteNo(),
+																	f.getRuleNo(),f.getTariffNo(),f.getCode()});
+		}
+		// ************************************************************
+		
+		// SCROLLS **************************************************
+		JScrollPane scrollPane = new JScrollPane(table);
+		table.setFillsViewportHeight(true);
+		// **********************************************************
+		
+		// TOOL TIP TEXTS *******************************************
+		newBut.setToolTipText("Create a new Fare");
+		delBut.setToolTipText("Delete selected Fare");
+		editBut.setToolTipText("Edit selected Fare");
+		// **********************************************************
+		
+		// COMBO BOXES ****************************************************
+		List<Route> listaRoute = new ArrayList<Route>();
+		listaRoute = dbrt.listAllRoutes();
+		cmbBox.addItem(0);
+		for(Route rt:listaRoute) {
+			cmbBox.addItem(rt.getRouteNo());
+		}
+		
+		List<Rule> listaRule = new ArrayList<Rule>();
+		listaRule = dbrl.listAllRules();
+		cmbBox2.addItem(0);
+		for(Rule rl:listaRule) {
+			cmbBox2.addItem(rl.getRuleNo());
+		}
+		
+		List<Tariff> listaTariff = new ArrayList<Tariff>();
+		listaTariff = dbt.listAllTariffs();
+		cmbBox3.addItem(0);
+		for(Tariff t:listaTariff) {
+			cmbBox3.addItem(t.getTariffNo());
+		}
+		
+		List<Carrier> listaCarrier = new ArrayList<Carrier>();
+		listaCarrier = dbc.listAllCarriers();
+		cmbBox4.addItem("");
+		for(Carrier c:listaCarrier) {
+			cmbBox4.addItem(c.getCode());
+		}
+		// ****************************************************************
+		
+		// TEXT FIELDS ****************************************************
+		txtF.setPreferredSize(new Dimension(50,20));
+		txtF2.setPreferredSize(new Dimension(50,20));
+		txtF3.setPreferredSize(new Dimension(75,20));
+		// ***************************************************************
+		
+		// PANELS ORGANIZATION ***********************************************
+		// 1 ~~~~~~
+		buttonPanel.add(newBut);
+		buttonPanel.add(delBut);
+		buttonPanel.add(editBut);
+		scrollPane.setBorder(borda);
+		geralPanel.add(scrollPane);
+		geralPanel.add(buttonPanel);
+		
+		frame.add(geralPanel);
+		// 2 ~~~~~~
+		buttonPanel2.add(createBut);
+		buttonPanel2.add(resetBut);
+		buttonPanel2.add(cancelBut);
+		line1.add(label2);
+		line1.add(txtF);
+		line2.add(label3);
+		line2.add(txtF2);
+		line3.add(label4);
+		line3.add(txtF3);
+		line4.add(label5);
+		line4.add(cmbBox);
+		line5.add(label6);
+		line5.add(cmbBox2);
+		line6.add(label7);
+		line6.add(cmbBox3);
+		line7.add(label8);
+		line7.add(cmbBox4);
+		line7.add(editcBut);
+		geralPanel2.add(line1);
+		geralPanel2.add(line2);
+		geralPanel2.add(line3);
+		geralPanel2.add(line4);
+		geralPanel2.add(line5);
+		geralPanel2.add(line6);
+		geralPanel2.add(line7);
+		geralPanel2.add(buttonPanel2);
+		
+		frame2.add(geralPanel2);
+		// 3 ~~~~~~
+		buttonPanel3.add(simBut);
+		buttonPanel3.add(naoBut);
+		geralPanel3.add(buttonPanel3);
+		
+		frame3.add(geralPanel3);
+		// *********************************************************************
+		
+		// BUTTONS LISTENERS ***************************************************
+		newBut.addActionListener( new ActionListener() {
+
+			public void actionPerformed(ActionEvent e) {
+				frame2.setVisible(true);
+			}
+		});
+
+		delBut.addActionListener( new ActionListener() {
+
+			public void actionPerformed(ActionEvent e) {
+				rowSelected = table.getSelectedRow();
+				idSelected = (int) model.getValueAt(rowSelected, 0);
+				boolean rowValid;
+				if (rowSelected >= 0)
+					rowValid = false;
+				else
+					rowValid = true;
+				if (rowValid) {
+					MessagesManager.displayErrorMessage("Selecione a Fare a ser excluído!");
+				}else{
+					frame3.setVisible(true);
+				}
+
+			}
+
+		});
+		
+		createBut.addActionListener( new ActionListener () {
+
+			public void actionPerformed(ActionEvent e) {
+
+				String origin = txtF.getText();
+				String destiny = txtF2.getText();
+				String addon = txtF3.getText();
+				int routeNo = (int) cmbBox.getSelectedItem();
+				int ruleNo = (int) cmbBox2.getSelectedItem();
+				int tariffNo = (int) cmbBox3.getSelectedItem();
+				String code = (String) cmbBox4.getSelectedItem();
+	
+				boolean someorg = origin.matches("");
+				boolean somedest = destiny.matches("");
+				boolean somertno = routeNo == 0;
+				boolean somerlno = ruleNo == 0;
+				boolean sometno = tariffNo == 0;
+				boolean somecode = code.matches("");
+				if (someorg == true)
+					MessagesManager.displayErrorMessage("Error: Please enter the origin!");
+				else if (somedest == true)
+					MessagesManager.displayErrorMessage("Error: Please enter the destiny!");
+				else if (somertno == true)
+					MessagesManager.displayErrorMessage("Error: Please choose the route!");
+				else if (somerlno == true)
+					MessagesManager.displayErrorMessage("Error: Please choose the rule!");
+				else if (sometno == true)
+					MessagesManager.displayErrorMessage("Error: Please choose the tariff!");
+				else if (somecode == true)
+					MessagesManager.displayErrorMessage("Error: Please choose the code!");
+				else {
+					fare.setOrigin(origin);
+					fare.setDestiny(destiny);
+					fare.setAddon(addon);
+					fare.setRouteNo(routeNo);
+					fare.setRuleNo(ruleNo);
+					fare.setTariffNo(tariffNo);
+					fare.setCode(code);
+					try {
+						if ( dbf.insertFare(fare) ) {
+						    model.setRowCount(0);
+							List<Fare> listaFare = new ArrayList<Fare>();
+							listaFare = dbf.listAllFares();
+							for(Fare f:listaFare) {
+								model.addRow(new Object[]{f.getIdFare(),f.getOrigin(),f.getDestiny(),f.getAddon(),
+										f.getRouteNo(), f.getRuleNo(),f.getTariffNo(),f.getCode()});
+							}
+							MessagesManager.displaySuccessMessage("Fare inserida com sucesso!");
+						} else {
+							MessagesManager.displayErrorMessage("Fare não pode ser inserida!");
+						}
+
+					} catch (SQLException exp) {
+						MessagesManager.displayErrorMessage("Ocorreu um erro ao inserir a Fare: "
+																								+ exp.getMessage() );
+					}
+					frame2.dispose();
+				}
+			}
+		});
+
+		simBut.addActionListener( new ActionListener () {
+
+			public void actionPerformed(ActionEvent e) {
+				try{
+					if( dbf.deleteFare(idSelected) ){
+						model.removeRow(rowSelected);
+						MessagesManager.displaySuccessMessage("Fare excluída com sucesso!");
+						frame3.dispose();
+					}else{
+						MessagesManager.displayErrorMessage("Fare não pode ser excluída!");
+						frame3.dispose();
+					}
+
+				}catch(Exception ex){
+					MessagesManager.displayErrorMessage("Ocorreu um erro ao excluir Fare: "
+							+ ex.getMessage() );
+					frame3.dispose();
+				}
+			}
+		});
+
+		naoBut.addActionListener( new ActionListener () {
+
+			public void actionPerformed(ActionEvent e) {
+				frame3.dispose();
+			}
+		});
+		
+		cancelBut.addActionListener( new ActionListener () {
+
+			public void actionPerformed(ActionEvent e) {
+				frame2.dispose();
+			}
+		});
+		
+		editcBut.addActionListener( new ActionListener () {
+
+			public void actionPerformed(ActionEvent e) {
+				try {
+					GUICarrier cView = new GUICarrier();
+					cView.getFrame().setVisible(true);
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+				}
+			}
+		});
+	}
+	
+	public JFrame getFrame() {
+		return frame;
+	}
+	
+	public static JComboBox<String> getCmbBox4() {
+		return cmbBox4;
+	}
+}
